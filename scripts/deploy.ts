@@ -1,0 +1,25 @@
+import { viem } from 'hardhat'
+import { Address } from 'viem'
+
+const MY_WALLET_ADDRESS = process.env.MY_WALLET_ADDRESS as Address
+
+async function main () {
+  if (!MY_WALLET_ADDRESS) {
+    throw new Error('Please set the MY_WALLET_ADDRESS environment variable')
+  }  else if (MY_WALLET_ADDRESS.match(/^0x[0-9a-fA-F]{40}$/) === null) {
+    throw new Error('MY_WALLET_ADDRESS must be a valid Ethereum address')
+  }
+  const AssetBox = await viem.deployContract('AssetBox', [
+    MY_WALLET_ADDRESS
+  ])
+  console.log(`AssetBox deployed to: ${AssetBox.address}`)
+}
+
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error)
+    process.exitCode = 1
+  })
