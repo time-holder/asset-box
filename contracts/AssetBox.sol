@@ -2,16 +2,22 @@
 pragma solidity ^0.8.20;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {Withdrawable} from "./base/Withdrawable.sol";
-import {Receivable} from "./base/Receivable.sol";
 import {Callable} from "./base/Callable.sol";
 import {NFTHolder} from "./base/NFTHolder.sol";
+import {Receivable} from "./base/Receivable.sol";
+import {Withdrawable} from "./base/Withdrawable.sol";
 
-contract AssetBox is Ownable, Withdrawable, Callable, Receivable, NFTHolder {
+contract AssetBox is Ownable, Callable, NFTHolder, Receivable, Withdrawable {
+  function name()
+  external pure virtual
+  returns (string memory) {
+    return "AssetBox";
+  }
+
   function version()
   external pure virtual
   returns (string memory) {
-    return "1.0.0";
+    return "1.1.0";
   }
 
   constructor(address initialOwner) Ownable(initialOwner) {}

@@ -1,20 +1,25 @@
 {
   "name": "@timeholder/asset-box",
-  "version": "1.0.6",
+  "version": "1.1.4",
   "description": "A Solidity-implemented Ethereum EVM asset management contract designed to enhance security by segregating assets from wallets, thereby reducing the risk of asset theft.",
   "license": "MIT",
   "scripts": {
     "build": "npx hardhat compile",
     "test": "npx hardhat test",
-    "release": "npm run build && tsc && npm publish --access public",
+    "flatten": "mkdir -p dist/contracts && npx hardhat flatten contracts/AssetBox.sol > dist/contracts/AssetBox.sol",
+    "release": "npm run test && npm run build && tsc && npm run flatten && npm publish --access public",
     "deploy:test": "npx hardhat run scripts/deploy.ts"
   },
   "keywords": [
+    "assetbox",
+    "asset-box",
+    "eth",
+    "eth-contract",
     "ethereum",
-    "smart contracts",
-    "timeholder",
-    "time holder",
-    "asset box"
+    "ethereum-contract",
+    "evm",
+    "smart-contract",
+    "timeholder"
   ],
   "homepage": "https://github.com/time-holder/asset-box#readme",
   "repository": {
@@ -34,7 +39,7 @@
     "@nomicfoundation/hardhat-toolbox-viem": "^2.0.0",
     "chai": "^4.4.1",
     "dotenv": "^16.4.5",
-    "hardhat": "^2.20.1"
+    "hardhat": "^2.22.1"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2"

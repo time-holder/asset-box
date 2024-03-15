@@ -1,8 +1,5 @@
 import { viem } from 'hardhat'
-import {
-  parseEther,
-  parseUnits,
-} from 'viem'
+import { Address, parseEther, parseUnits } from 'viem'
 import type {
   GetBalanceReturnType,
   WriteContractReturnType,
@@ -22,14 +19,9 @@ export interface TestTypes {
   NFT721: GetContractReturnType<ArtifactsMap['NFT721']['abi']>
   NFT1155: GetContractReturnType<ArtifactsMap['NFT1155']['abi']>
   AssetBox: GetContractReturnType<ArtifactsMap['AssetBox']['abi']>
-}
-
-export interface TestContracts {
-  WETH: TestTypes['WETH']
-  DAI: TestTypes['DAI']
-  USDC: TestTypes['USDC']
-  NFT721: TestTypes['NFT721']
-  NFT1155: TestTypes['NFT1155']
+  Callable: GetContractReturnType<ArtifactsMap['Callable']['abi']>
+  Receivable: GetContractReturnType<ArtifactsMap['Receivable']['abi']>
+  Withdrawable: GetContractReturnType<ArtifactsMap['Withdrawable']['abi']>
 }
 
 // Fixed the viem@1.15 Type check problem
@@ -43,7 +35,21 @@ export interface WalletClient extends BaseWalletClient {
   sendTransaction: (params: any) => Promise<SendTransactionReturnType>
 }
 
-export async function deployContracts (): Promise<TestContracts> {
+export interface TestClients {
+  publicClient: PublicClient
+  user: WalletClient
+  hacker: WalletClient
+}
+
+export interface TestContracts {
+  WETH: TestTypes['WETH']
+  DAI: TestTypes['DAI']
+  USDC: TestTypes['USDC']
+  NFT721: TestTypes['NFT721']
+  NFT1155: TestTypes['NFT1155']
+}
+
+export async function deployContracts(): Promise<TestContracts> {
   const WETH = await viem.deployContract('WETH')
   const DAI = await viem.deployContract('DAI')
   const USDC = await viem.deployContract('USDC')
@@ -59,15 +65,9 @@ export async function deployContracts (): Promise<TestContracts> {
   }
 }
 
-export async function getAssets (
+export async function claimAssets(
   user: WalletClient,
-  {
-    WETH,
-    DAI,
-    USDC,
-    NFT721,
-    NFT1155
-  }: TestContracts
+  { WETH, DAI, USDC, NFT721, NFT1155 }: TestContracts,
 ) {
   await user.writeContract({
     address: WETH.address,
@@ -80,68 +80,68 @@ export async function getAssets (
     address: DAI.address,
     abi: DAI.abi,
     functionName: 'mint',
-    args: [ parseUnits('20000', 18) ],
+    args: [parseUnits('20000', 18)],
   })
   await user.writeContract({
     address: USDC.address,
     abi: USDC.abi,
     functionName: 'mint',
-    args: [ parseUnits('10000', 6) ],
+    args: [parseUnits('10000', 6)],
   })
   await user.writeContract({
     address: NFT721.address,
     abi: NFT721.abi,
     functionName: 'safeMint',
-    args: [ user.account.address, 999 ],
+    args: [user.account.address, 999],
   })
   await user.writeContract({
     address: NFT1155.address,
     abi: NFT1155.abi,
     functionName: 'mintBatch',
-    args: [ user.account.address, [ 1, 666, 888 ], [ 100, 1000, 5000 ], '0x' ],
+    args: [user.account.address, [1, 666, 888], [100, 1000, 5000], '0x'],
   })
 }
 
-export async function depositAssets (
+export async function depositAssets(
+  address: Address,
   user: WalletClient,
-  AssetBox: TestTypes['AssetBox'],
-  {
-    WETH,
-    DAI,
-    USDC,
-    NFT721,
-    NFT1155
-  }: TestContracts
+  { WETH, DAI, USDC, NFT721, NFT1155 }: TestContracts,
 ) {
-  await user.sendTransaction({ to: AssetBox.address, value: parseEther('10') })
+  await user.sendTransaction({ to: address, value: parseEther('10') })
   await user.writeContract({
     address: WETH.address,
     abi: WETH.abi,
     functionName: 'transfer',
-    args: [ AssetBox.address, parseUnits('100', 18) ],
+    args: [address, parseUnits('100', 18)],
   })
   await user.writeContract({
     address: DAI.address,
     abi: DAI.abi,
     functionName: 'transfer',
-    args: [ AssetBox.address, parseUnits('20000', 18) ],
+    args: [address, parseUnits('20000', 18)],
   })
   await user.writeContract({
     address: USDC.address,
     abi: USDC.abi,
     functionName: 'transfer',
-    args: [ AssetBox.address, parseUnits('10000', 6) ],
+    args: [address, parseUnits('10000', 6)],
   })
   await user.writeContract({
     address: NFT721.address,
     abi: NFT721.abi,
     functionName: 'safeTransferFrom',
-    args: [ user.account.address, AssetBox.address, 999 ],
+    args: [user.account.address, address, 999],
   })
   await user.writeContract({
     address: NFT1155.address,
     abi: NFT1155.abi,
     functionName: 'safeBatchTransferFrom',
-    args: [ user.account.address, AssetBox.address, [ 1, 666, 888 ], [ 100, 1000, 5000 ], '0x' ],
+    args: [
+      user.account.address,
+      address,
+      [1, 666, 888],
+      [100, 1000, 5000],
+      '0x',
+    ],
   })
 }
