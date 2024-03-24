@@ -63,6 +63,7 @@ export async function testCallable(
       const deposit = encodeFunctionData({
         abi: WETH.abi,
         functionName: 'deposit',
+        args: [],
       })
 
       const withdraw = encodeFunctionData({

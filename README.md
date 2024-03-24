@@ -91,10 +91,7 @@ const walletClient = createWalletClient({
 })
 
 (async () => {
-  const [ address ] = await walletClient.getAddresses()
-
   const hash = await walletClient.deployContract({
-    account: address,
     abi,
     bytecode,
     args: [
@@ -130,10 +127,7 @@ const walletClient = createWalletClient({
 })
 
 (async () => {
-  const [ address ] = await walletClient.getAddresses()
-
   const hash = await walletClient.sendTransaction({
-    account: address,
     to: '<YOUR_ASSETBOX_CONTRACT_ADDRESS>',
     value: parseEther('1')
   })
@@ -170,8 +164,6 @@ const walletClient = createWalletClient({
 })
 
 (async () => {
-  const [ address ] = await walletClient.getAddresses()
-
   const deposit = encodeFunctionData({
     abi: WETH.abi,
     functionName: 'deposit',
@@ -185,7 +177,6 @@ const walletClient = createWalletClient({
 
   // Using AssetBox deposit 1 ETH to WETH
   await walletClient.writeContract({
-    account: address,
     address: AssetBox.address,
     abi: AssetBox.abi,
     functionName: 'callContract',
@@ -197,7 +188,6 @@ const walletClient = createWalletClient({
 
   // Using AssetBox withdraw 1 ETH from WETH
   await walletClient.writeContract({
-    account: address,
     address: AssetBox.address,
     abi: AssetBox.abi,
     functionName: 'callContract',
@@ -231,10 +221,7 @@ const walletClient = createWalletClient({
 })
 
 (async () => {
-  const [ address ] = await walletClient.getAddresses()
-    
   await walletClient.writeContract({
-    account: address,
     address: AssetBox.address,
     abi: AssetBox.abi,
     functionName: 'transferOwnership',
