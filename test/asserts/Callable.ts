@@ -15,7 +15,7 @@ interface TestData extends TestContracts, TestClients {
   Callable: TestTypes['Callable']
 }
 
-export type CallableOptions = {
+export type CallableTestOptions = {
   extra?: () => void
   '#callContract()'?: (
     data: TestData,
@@ -24,15 +24,15 @@ export type CallableOptions = {
       withdraw: string
       safeTransferFrom: string
     },
-  ) => void
+  ) => Promise<void>
 }
 
-export async function testCallable(
+export function testCallable(
   baseDeployFixture: () => Promise<{
     Callable: TestTypes['Callable']
     owner: WalletClient
   }>,
-  options?: CallableOptions,
+  options?: CallableTestOptions,
 ) {
   async function deployFixture() {
     const { Callable, owner } = await baseDeployFixture()

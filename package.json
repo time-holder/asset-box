@@ -1,6 +1,6 @@
 {
   "name": "@timeholder/asset-box",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "A Solidity-implemented Ethereum EVM asset management contract designed to enhance security by segregating assets from wallets, thereby reducing the risk of asset theft.",
   "license": "MIT",
   "scripts": {

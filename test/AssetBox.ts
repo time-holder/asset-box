@@ -27,7 +27,7 @@ describe('AssetBox', () => {
       }
     },
     {
-      State: {
+      stateTest: {
         extra: () => {
           it('#name()', async () => {
             const { AssetBox } = await loadFixture(deployFixture)

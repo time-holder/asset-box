@@ -16,39 +16,39 @@ interface TestData extends TestContracts, TestClients {
   Withdrawable: TestTypes['Withdrawable']
 }
 
-export type WithdrawableOptions = {
+export type WithdrawableTestOptions = {
   extra?: () => void
-  '#withdraw()'?: (data: TestData) => void
-  '#withdrawERC20()'?: (data: TestData) => void
+  '#withdraw()'?: (data: TestData) => Promise<void>
+  '#withdrawERC20()'?: (data: TestData) => Promise<void>
   '#withdrawERC721()'?: (
     data: TestData,
     params: {
       params: [string | Address, number, string]
       functionSignature: string
     },
-  ) => void
+  ) => Promise<void>
   '#withdrawERC1155()'?: (
     data: TestData,
     params: {
       params: [string | Address, number, number, string]
       functionSignature: string
     },
-  ) => void
+  ) => Promise<void>
   '#withdrawERC1155Batch()'?: (
     data: TestData,
     params: {
       params: [string | Address, number[], number[], string]
       functionSignature: string
     },
-  ) => void
+  ) => Promise<void>
 }
 
-export async function testWithdrawable(
+export function testWithdrawable(
   baseDeployFixture: () => Promise<{
     Withdrawable: TestTypes['Withdrawable']
     owner: WalletClient
   }>,
-  options?: WithdrawableOptions,
+  options?: WithdrawableTestOptions,
 ) {
   async function deployFixture() {
     const { Withdrawable, owner } = await baseDeployFixture()

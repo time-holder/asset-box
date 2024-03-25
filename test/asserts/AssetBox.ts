@@ -2,37 +2,37 @@ import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpe
 import { assert } from 'chai'
 import { viem } from 'hardhat'
 import { getAddress } from 'viem'
-import { testCallable, type CallableOptions } from './Callable'
-import { testReceivable, type ReceivableOptions } from './Receivable'
-import { testWithdrawable, type WithdrawableOptions } from './Withdrawable'
+import { testCallable, type CallableTestOptions } from './Callable'
+import { testReceivable, type ReceivableTestOptions } from './Receivable'
+import { testWithdrawable, type WithdrawableTestOptions } from './Withdrawable'
 import { deployContracts } from '../common'
 import type { PublicClient, WalletClient, TestTypes } from '../common'
 
-type StateOptions = {
+type StateTestOptions = {
   extra?: () => void
 }
 
-type SecurityOptions = {
+type SecurityTestOptions = {
   extra?: () => void
 }
 
-export async function testAssetBox(
+export function testAssetBox(
   baseDeployFixture: () => Promise<{
     AssetBox: TestTypes['AssetBox']
     owner: WalletClient
   }>,
   {
-    State,
-    Security,
-    Callable,
-    Receivable,
-    Withdrawable,
+    stateTest,
+    securityTest,
+    callableTest,
+    receivableTest,
+    withdrawableTest,
   }: {
-    State?: StateOptions
-    Security?: SecurityOptions
-    Callable?: CallableOptions
-    Receivable?: ReceivableOptions
-    Withdrawable?: WithdrawableOptions
+    stateTest?: StateTestOptions
+    securityTest?: SecurityTestOptions
+    callableTest?: CallableTestOptions
+    receivableTest?: ReceivableTestOptions
+    withdrawableTest?: WithdrawableTestOptions
   } = {},
 ) {
   async function deployFixture() {
@@ -63,7 +63,7 @@ export async function testAssetBox(
       )
     })
 
-    State?.extra?.()
+    stateTest?.extra?.()
   })
 
   describe('Security', () => {
@@ -92,7 +92,7 @@ export async function testAssetBox(
       )
     })
 
-    Security?.extra?.()
+    securityTest?.extra?.()
   })
 
   testCallable(async () => {
@@ -101,7 +101,7 @@ export async function testAssetBox(
       Callable: AssetBox as unknown as TestTypes['Callable'],
       owner,
     }
-  }, Callable)
+  }, callableTest)
 
   testReceivable(async () => {
     const { AssetBox, owner } = await baseDeployFixture()
@@ -109,7 +109,7 @@ export async function testAssetBox(
       Receivable: AssetBox as unknown as TestTypes['Receivable'],
       owner,
     }
-  }, Receivable)
+  }, receivableTest)
 
   testWithdrawable(async () => {
     const { AssetBox, owner } = await baseDeployFixture()
@@ -117,5 +117,5 @@ export async function testAssetBox(
       Withdrawable: AssetBox as unknown as TestTypes['Withdrawable'],
       owner,
     }
-  }, Withdrawable)
+  }, withdrawableTest)
 }

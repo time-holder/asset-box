@@ -5,16 +5,16 @@ import { getAddress, parseEther, parseUnits } from 'viem'
 import { deployContracts, claimAssets, depositAssets } from '../common'
 import type { PublicClient, WalletClient, TestTypes } from '../common'
 
-export type ReceivableOptions = {
+export type ReceivableTestOptions = {
   extra?: () => void
 }
 
-export async function testReceivable(
+export function testReceivable(
   baseDeployFixture: () => Promise<{
     Receivable: TestTypes['Receivable']
     owner: WalletClient
   }>,
-  options?: ReceivableOptions,
+  options?: ReceivableTestOptions,
 ) {
   async function deployFixture() {
     const { Receivable, owner } = await baseDeployFixture()
