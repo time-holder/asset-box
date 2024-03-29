@@ -1,7 +1,8 @@
 # 🎁 Asset Box
 
-[![Tests](https://github.com/time-holder/asset-box/actions/workflows/tests.yml/badge.svg)](https://github.com/time-holder/asset-box/actions/workflows/tests.yml)
 [![npm version](https://img.shields.io/npm/v/@timeholder/asset-box/latest.svg)](https://www.npmjs.com/package/@timeholder/asset-box)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Tests](https://github.com/time-holder/asset-box/actions/workflows/tests.yml/badge.svg)](https://github.com/time-holder/asset-box/actions/workflows/tests.yml)
 
 A Solidity-implemented Ethereum EVM asset management contract designed to enhance security by segregating assets from wallets, thereby reducing the risk of asset theft.
 

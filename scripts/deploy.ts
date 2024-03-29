@@ -1,13 +1,13 @@
 import { viem } from 'hardhat'
-import { Address } from 'viem'
+import { isAddress } from 'viem'
 
-const MY_WALLET_ADDRESS = process.env.MY_WALLET_ADDRESS as Address
+const MY_WALLET_ADDRESS = process.env.MY_WALLET_ADDRESS as string
 
 async function main () {
   if (!MY_WALLET_ADDRESS) {
-    throw new Error('Please set the MY_WALLET_ADDRESS environment variable')
-  }  else if (MY_WALLET_ADDRESS.match(/^0x[0-9a-fA-F]{40}$/) === null) {
-    throw new Error('MY_WALLET_ADDRESS must be a valid Ethereum address')
+    throw new Error('Please set the `MY_WALLET_ADDRESS` environment variable.')
+  } else if (!isAddress(MY_WALLET_ADDRESS)) {
+    throw new Error(`\`${MY_WALLET_ADDRESS}\` is not a valid Ethereum address.`)
   }
   const AssetBox = await viem.deployContract('AssetBox', [
     MY_WALLET_ADDRESS
