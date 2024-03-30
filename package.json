@@ -1,12 +1,13 @@
 {
   "name": "@timeholder/asset-box",
-  "version": "1.1.8",
+  "version": "1.1.14",
   "description": "A Solidity-implemented Ethereum EVM asset management contract designed to enhance security by segregating assets from wallets, thereby reducing the risk of asset theft.",
   "license": "MIT",
   "scripts": {
     "build": "npx hardhat compile",
     "test": "npx hardhat test",
-    "flatten": "mkdir -p dist/contracts && npx hardhat flatten contracts/AssetBox.sol > dist/contracts/AssetBox.sol",
+    "flatten": "mkdir -p dist/contracts && npm run flatten:AssetBox",
+    "flatten:AssetBox": "npx hardhat flatten contracts/AssetBox.sol > dist/contracts/AssetBox.sol",
     "release": "npm run test && npm run build && tsc && npm run flatten && npm publish --access public",
     "deploy:test": "npx hardhat run scripts/deploy.ts"
   },

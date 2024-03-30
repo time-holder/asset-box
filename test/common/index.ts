@@ -1,16 +1,33 @@
 import { viem } from 'hardhat'
-import { Address, parseEther, parseUnits } from 'viem'
-import type {
-  GetBalanceReturnType,
-  WriteContractReturnType,
-  SendTransactionReturnType,
-} from 'viem'
+import { parseEther, parseUnits } from 'viem'
+import { deployContract } from '../utils'
+import type { Address } from 'viem'
 import type {
   GetContractReturnType,
-  PublicClient as BasePublicClient,
-  WalletClient as BaseWalletClient,
+  PublicClient,
+  WalletClient,
 } from '@nomicfoundation/hardhat-viem/types'
 import type { ArtifactsMap } from 'hardhat/types'
+import {
+  abi as WETHAbi,
+  bytecode as WETHBytecode,
+} from '../../artifacts/contracts/test/WETH.sol/WETH.json'
+import {
+  abi as DAIAbi,
+  bytecode as DAIBytecode,
+} from '../../artifacts/contracts/test/DAI.sol/DAI.json'
+import {
+  abi as USDCAbi,
+  bytecode as USDCBytecode,
+} from '../../artifacts/contracts/test/USDC.sol/USDC.json'
+import {
+  abi as NFT721Abi,
+  bytecode as NFT721Bytecode,
+} from '../../artifacts/contracts/test/NFT721.sol/NFT721.json'
+import {
+  abi as NFT1155Abi,
+  bytecode as NFT1155Bytecode,
+} from '../../artifacts/contracts/test/NFT1155.sol/NFT1155.json'
 
 export interface TestTypes {
   WETH: GetContractReturnType<ArtifactsMap['WETH']['abi']>
@@ -22,17 +39,6 @@ export interface TestTypes {
   Callable: GetContractReturnType<ArtifactsMap['Callable']['abi']>
   Receivable: GetContractReturnType<ArtifactsMap['Receivable']['abi']>
   Withdrawable: GetContractReturnType<ArtifactsMap['Withdrawable']['abi']>
-}
-
-// Fixed the viem@1.15 Type check problem
-export interface PublicClient extends BasePublicClient {
-  getBalance: (params: any) => Promise<GetBalanceReturnType>
-}
-
-// Fixed the viem@1.15 Type check problem
-export interface WalletClient extends BaseWalletClient {
-  writeContract: (params: any) => Promise<WriteContractReturnType>
-  sendTransaction: (params: any) => Promise<SendTransactionReturnType>
 }
 
 export interface TestClients {
@@ -50,11 +56,32 @@ export interface TestContracts {
 }
 
 export async function deployContracts(): Promise<TestContracts> {
-  const WETH = await viem.deployContract('WETH')
-  const DAI = await viem.deployContract('DAI')
-  const USDC = await viem.deployContract('USDC')
-  const NFT721 = await viem.deployContract('NFT721')
-  const NFT1155 = await viem.deployContract('NFT1155')
+  const [owner] = (await viem.getWalletClients()) as WalletClient[]
+  const WETH = (await deployContract(
+    owner,
+    WETHAbi,
+    WETHBytecode,
+  )) as unknown as TestTypes['WETH']
+  const DAI = (await deployContract(
+    owner,
+    DAIAbi,
+    DAIBytecode,
+  )) as unknown as TestTypes['DAI']
+  const USDC = (await deployContract(
+    owner,
+    USDCAbi,
+    USDCBytecode,
+  )) as unknown as TestTypes['USDC']
+  const NFT721 = (await deployContract(
+    owner,
+    NFT721Abi,
+    NFT721Bytecode,
+  )) as unknown as TestTypes['NFT721']
+  const NFT1155 = (await deployContract(
+    owner,
+    NFT1155Abi,
+    NFT1155Bytecode,
+  )) as unknown as TestTypes['NFT1155']
 
   return {
     WETH,
@@ -92,13 +119,13 @@ export async function claimAssets(
     address: NFT721.address,
     abi: NFT721.abi,
     functionName: 'safeMint',
-    args: [user.account.address, 999],
+    args: [user.account.address, 999n],
   })
   await user.writeContract({
     address: NFT1155.address,
     abi: NFT1155.abi,
     functionName: 'mintBatch',
-    args: [user.account.address, [1, 666, 888], [100, 1000, 5000], '0x'],
+    args: [user.account.address, [1n, 666n, 888n], [100n, 1000n, 5000n], '0x'],
   })
 }
 
@@ -130,7 +157,7 @@ export async function depositAssets(
     address: NFT721.address,
     abi: NFT721.abi,
     functionName: 'safeTransferFrom',
-    args: [user.account.address, address, 999],
+    args: [user.account.address, address, 999n],
   })
   await user.writeContract({
     address: NFT1155.address,
@@ -139,8 +166,8 @@ export async function depositAssets(
     args: [
       user.account.address,
       address,
-      [1, 666, 888],
-      [100, 1000, 5000],
+      [1n, 666n, 888n],
+      [100n, 1000n, 5000n],
       '0x',
     ],
   })

@@ -1,12 +1,12 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { assert } from 'chai'
 import { viem } from 'hardhat'
-import type { WalletClient } from './common'
 import { testAssetBox } from './asserts/AssetBox'
+import type { WalletClient } from '@nomicfoundation/hardhat-viem/types'
 
 describe('AssetBox', () => {
   async function deployFixture() {
-    const [_, user] = (await viem.getWalletClients()) as WalletClient[]
+    const [, user] = (await viem.getWalletClients()) as WalletClient[]
 
     const AssetBox = await viem.deployContract('AssetBox', [
       user.account.address,

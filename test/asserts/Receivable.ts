@@ -3,7 +3,11 @@ import { assert } from 'chai'
 import { viem } from 'hardhat'
 import { getAddress, parseEther, parseUnits } from 'viem'
 import { deployContracts, claimAssets, depositAssets } from '../common'
-import type { PublicClient, WalletClient, TestTypes } from '../common'
+import type {
+  PublicClient,
+  WalletClient,
+} from '@nomicfoundation/hardhat-viem/types'
+import type { TestTypes } from '../common'
 
 export type ReceivableTestOptions = {
   extra?: () => void

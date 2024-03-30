@@ -3,13 +3,12 @@ import { assert } from 'chai'
 import { viem } from 'hardhat'
 import { encodeFunctionData, getAddress, parseEther } from 'viem'
 import { deployContracts, claimAssets, depositAssets } from '../common'
+import type { Hex } from 'viem'
 import type {
   PublicClient,
   WalletClient,
-  TestContracts,
-  TestClients,
-  TestTypes,
-} from '../common'
+} from '@nomicfoundation/hardhat-viem/types'
+import type { TestContracts, TestClients, TestTypes } from '../common'
 
 interface TestData extends TestContracts, TestClients {
   Callable: TestTypes['Callable']
@@ -20,9 +19,9 @@ export type CallableTestOptions = {
   '#callContract()'?: (
     data: TestData,
     params: {
-      deposit: string
-      withdraw: string
-      safeTransferFrom: string
+      deposit: Hex
+      withdraw: Hex
+      safeTransferFrom: Hex
     },
   ) => Promise<void>
 }
@@ -135,9 +134,14 @@ export function testCallable(
         abi: Callable.abi,
         functionName: 'callContract',
         args: [WETH.address, deposit],
+        // @ts-ignore viem@2.x Function overload type checking is inaccurate.
         value: parseEther('10'),
       })
       WETHBalance += parseEther('10')
+      assert.equal(
+        await publicClient.getBalance({ address: Callable.address }),
+        ETHBalance,
+      )
       assert.equal(await WETH.read.balanceOf([Callable.address]), WETHBalance)
 
       await user.writeContract({

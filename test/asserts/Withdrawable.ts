@@ -1,16 +1,16 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { assert } from 'chai'
 import { viem } from 'hardhat'
-import { Address, formatEther, getAddress, parseEther, parseUnits } from 'viem'
+import { formatEther, getAddress, parseEther, parseUnits } from 'viem'
 import { numberFixed } from '../utils'
 import { deployContracts, claimAssets, depositAssets } from '../common'
+import type { Address, Hex, ContractFunctionName } from 'viem'
+import type { ArtifactsMap } from 'hardhat/types'
 import type {
   PublicClient,
   WalletClient,
-  TestContracts,
-  TestClients,
-  TestTypes,
-} from '../common'
+} from '@nomicfoundation/hardhat-viem/types'
+import type { TestContracts, TestClients, TestTypes } from '../common'
 
 interface TestData extends TestContracts, TestClients {
   Withdrawable: TestTypes['Withdrawable']
@@ -23,22 +23,28 @@ export type WithdrawableTestOptions = {
   '#withdrawERC721()'?: (
     data: TestData,
     params: {
-      params: [string | Address, number, string]
-      functionSignature: string
+      params: [Address, bigint, Hex]
+      functionSignature: ContractFunctionName<
+        ArtifactsMap['Withdrawable']['abi']
+      >
     },
   ) => Promise<void>
   '#withdrawERC1155()'?: (
     data: TestData,
     params: {
-      params: [string | Address, number, number, string]
-      functionSignature: string
+      params: [Address, bigint, bigint, Hex]
+      functionSignature: ContractFunctionName<
+        ArtifactsMap['Withdrawable']['abi']
+      >
     },
   ) => Promise<void>
   '#withdrawERC1155Batch()'?: (
     data: TestData,
     params: {
-      params: [string | Address, number[], number[], string]
-      functionSignature: string
+      params: [Address, bigint[], bigint[], Hex]
+      functionSignature: ContractFunctionName<
+        ArtifactsMap['Withdrawable']['abi']
+      >
     },
   ) => Promise<void>
 }
@@ -170,11 +176,7 @@ export function testWithdrawable(
     it('#withdrawERC721()', async () => {
       const data = await loadFixture(deployFixture)
       const { NFT721, Withdrawable, hacker, user } = data
-      const params: [string | Address, number, string] = [
-        NFT721.address,
-        999,
-        '0x',
-      ]
+      const params: [Address, bigint, Hex] = [NFT721.address, 999n, '0x']
       const functionSignature = 'withdrawERC721'
 
       await options?.['#withdrawERC721()']?.(data, {
@@ -207,10 +209,10 @@ export function testWithdrawable(
     it('#withdrawERC1155()', async () => {
       const data = await loadFixture(deployFixture)
       const { NFT1155, Withdrawable, hacker, user } = data
-      const params: [string | Address, number, number, string] = [
+      const params: [Address, bigint, bigint, Hex] = [
         NFT1155.address,
-        888,
-        5000,
+        888n,
+        5000n,
         '0x',
       ]
       const functionSignature = 'withdrawERC1155'
@@ -248,10 +250,10 @@ export function testWithdrawable(
     it('#withdrawERC1155Batch()', async () => {
       const data = await loadFixture(deployFixture)
       const { NFT1155, Withdrawable, hacker, user } = data
-      const params: [string | Address, number[], number[], string] = [
+      const params: [Address, bigint[], bigint[], Hex] = [
         NFT1155.address,
-        [1, 666],
-        [100, 1000],
+        [1n, 666n],
+        [100n, 1000n],
         '0x',
       ]
       const functionSignature = 'withdrawERC1155Batch'

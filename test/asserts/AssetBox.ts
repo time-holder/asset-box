@@ -6,7 +6,11 @@ import { testCallable, type CallableTestOptions } from './Callable'
 import { testReceivable, type ReceivableTestOptions } from './Receivable'
 import { testWithdrawable, type WithdrawableTestOptions } from './Withdrawable'
 import { deployContracts } from '../common'
-import type { PublicClient, WalletClient, TestTypes } from '../common'
+import type {
+  PublicClient,
+  WalletClient,
+} from '@nomicfoundation/hardhat-viem/types'
+import type { TestTypes } from '../common'
 
 type StateTestOptions = {
   extra?: () => void
